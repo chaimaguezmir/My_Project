@@ -3,6 +3,7 @@ package gourmand.gui;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.prefs.Preferences;
 
 import gourmand.entity.Product;
 import gourmand.services.PersonneService;
@@ -40,10 +41,18 @@ public class cardProductController implements Initializable {
     private Product prodData;
     private Alert alert;
 
+    public  int getIdSession() {
+
+        Preferences prefs
+                = Preferences.userNodeForPackage(LoginPersonneController.class);
+        return prefs.getInt("user_connected",0);
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         productService = new ProductService();
         setQuantity();
+
     }
 
     public void setData(Product prodData) {
@@ -88,7 +97,9 @@ public class cardProductController implements Initializable {
 
         Panier panier = new Panier();
         panier.setProductId(prodData.getId());
+
         panier.setPersonneId(PersonneService.idSessions);
+
         panier.setQuantity(qty);
 
         ProductService productService1 = new ProductService();

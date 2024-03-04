@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 
 import gourmand.entity.Commande;
 import gourmand.entity.Panier;
+import gourmand.entity.Personne;
 import gourmand.entity.Reservation;
 import gourmand.utils.Database;
 import javafx.collections.FXCollections;
@@ -190,7 +191,7 @@ public class CommandeService implements IService<Commande> {
 
 
 
-    public List<Commande> getAllPanierByPanierPersonne(int id) {
+    public List<Commande> getAllPanierByPanierPersonne() {
         List<Commande> commandes = new ArrayList<>();
         Commande commande = new Commande();
         String query = "SELECT * FROM commande where idPersonne=?";
@@ -198,7 +199,7 @@ public class CommandeService implements IService<Commande> {
 
 
         try (PreparedStatement statement = myConnex.prepareStatement(query)) {
-            statement.setInt(1, id);
+            statement.setInt(1, 21);
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
                     commande = new Commande(

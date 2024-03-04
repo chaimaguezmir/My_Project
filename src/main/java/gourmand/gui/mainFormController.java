@@ -1,23 +1,5 @@
 package gourmand.gui;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
-import java.util.ResourceBundle;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.Node;
-import javafx.stage.Stage;
-import javafx.event.ActionEvent;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-//import java.awt.image.BufferedImage;
-
 import gourmand.entity.Categorie;
 import gourmand.entity.Product;
 import gourmand.services.ProductService;
@@ -30,35 +12,42 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.chart.AreaChart;
 import javafx.scene.chart.BarChart;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.chart.PieChart;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
-import javafx.scene.image.*;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.sql.*;
+import java.util.*;
+/*
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.common.BitMatrix;
+import javafx.embed.swing.SwingFXUtils;
 
-
-
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+*/
 
 public class mainFormController implements Initializable {
 
+    public TableColumn qrCodeColumn1;
     private Alert alert;
 
     private Connection connect;
@@ -72,7 +61,7 @@ public class mainFormController implements Initializable {
     private ObservableList<Product> cardListData = FXCollections.observableArrayList();
     private ObservableList<Product> inventoryListData;
     private ObservableList<Categorie> listCat = FXCollections.observableArrayList();
-
+    private ProductService productService;
 
    @FXML
     private TableColumn<Product,Image> qrCodeColumn;
@@ -86,7 +75,6 @@ public class mainFormController implements Initializable {
 
     @FXML
     private Label username;
-
     @FXML
     private Button dashboard_btn;
 
@@ -157,6 +145,9 @@ public class mainFormController implements Initializable {
     private ComboBox<String> inventory_status;
 
     @FXML
+    private Button tri;
+
+    @FXML
     private ComboBox<String> inventory_type;
 
     @FXML
@@ -176,6 +167,7 @@ public class mainFormController implements Initializable {
 
     @FXML
     private TableColumn<Product, String> menu_col_quantity;
+
 
     @FXML
     private TableColumn<Product, String> menu_col_price;
@@ -215,7 +207,8 @@ public class mainFormController implements Initializable {
 
     @FXML
     private Label dashboard_NSP;
-
+    @FXML
+    private PieChart stat;
     @FXML
     private AreaChart<?, ?> dashboard_incomeChart;
 
@@ -232,38 +225,97 @@ public class mainFormController implements Initializable {
 
         showCategoriesData();
         menuDisplayCard();
-    }
 
-    public void inventoryAddBtn() throws SQLException {
-        if (inventory_productName.getText().isEmpty() || inventory_type.getValue() == null || inventory_stock.getText().isEmpty()
-                || inventory_price.getText().isEmpty() || inventory_status.getValue() == null || data.path == null) {
+        ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();
 
-            alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error Message");
-            alert.setHeaderText(null);
-            alert.setContentText("Please fill all blank fields");
-            alert.showAndWait();
-        } else {
-            Product product = new Product();
-            product.setProductName(inventory_productName.getText());
-            product.setType(inventory_type.getValue());
-            product.setStock(Integer.parseInt(inventory_stock.getText()));
-            product.setPrice(Double.parseDouble(inventory_price.getText()));
-            product.setStatus(inventory_status.getValue());
+        // Get all products
+        List<Product> allProducts = serviceProduct.getAll();
 
-            // Add product:
-            serviceProduct.create(product);
-
-            alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Success Message");
-            alert.setHeaderText(null);
-            alert.setContentText("Successfully Added!");
-            alert.showAndWait();
-
-            inventoryShowData();
-            inventoryClearBtn();
+        // Create a map to count the occurrences of each product type
+        Map<String, Integer> typeCountMap;
+        typeCountMap = new HashMap<>();
+        for (Product product : allProducts) {
+            String type = product.getType();
+            typeCountMap.put(type, typeCountMap.getOrDefault(type, 0) + 1);
         }
+
+        // Add each type and its count to the pie chart data
+        for (Map.Entry<String, Integer> entry : typeCountMap.entrySet()) {
+            pieChartData.add(new PieChart.Data(entry.getKey(), entry.getValue()));
+        }
+
+        stat.setData(pieChartData);
     }
+
+    /*
+        public void inventoryAddBtn() throws SQLException {
+            if (inventory_productName.getText().isEmpty() || inventory_type.getValue() == null || inventory_stock.getText().isEmpty()
+                    || inventory_price.getText().isEmpty() || inventory_status.getValue() == null || data.path == null) {
+
+                alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error Message");
+                alert.setHeaderText(null);
+                alert.setContentText("Please fill all blank fields");
+                alert.showAndWait();
+            } else {
+                Product product = new Product();
+                product.setProductName(inventory_productName.getText());
+                product.setType(inventory_type.getValue());
+                product.setStock(Integer.parseInt(inventory_stock.getText()));
+                product.setPrice(Double.parseDouble(inventory_price.getText()));
+                product.setStatus(inventory_status.getValue());
+
+                // Add product:
+                serviceProduct.create(product);
+
+                alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Success Message");
+                alert.setHeaderText(null);
+                alert.setContentText("Successfully Added!");
+                alert.showAndWait();
+
+                inventoryShowData();
+                inventoryClearBtn();
+            }
+            addToPieChartData(pieChartData, product.getType());
+        }*/
+public void inventoryAddBtn() throws SQLException {
+    if (inventory_productName.getText().isEmpty() || inventory_type.getValue() == null || inventory_stock.getText().isEmpty()
+            || inventory_price.getText().isEmpty() || inventory_status.getValue() == null || data.path == null) {
+
+        alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error Message");
+        alert.setHeaderText(null);
+        alert.setContentText("Please fill all blank fields");
+        alert.showAndWait();
+    } else {
+        // Declaration of product variable
+        Product product = new Product();
+        product.setProductName(inventory_productName.getText());
+        product.setType(inventory_type.getValue());
+        product.setStock(Integer.parseInt(inventory_stock.getText()));
+        product.setPrice(Double.parseDouble(inventory_price.getText()));
+        product.setStatus(inventory_status.getValue());
+
+        // Add product:
+        serviceProduct.create(product);
+
+        alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Success Message");
+        alert.setHeaderText(null);
+        alert.setContentText("Successfully Added!");
+        alert.showAndWait();
+
+        inventoryShowData();
+        inventoryClearBtn();
+
+        // Assuming addToPieChartData method is declared within the same class
+        addToPieChartData(pieChartData, product.getType());
+    }
+}
+
+    private ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();
+
 
     public void inventoryUpdateBtn() {
         if (inventory_productName.getText().isEmpty() || inventory_type.getValue() == null || inventory_stock.getText().isEmpty()
@@ -729,4 +781,42 @@ public class mainFormController implements Initializable {
         alert.setContentText(message);
         alert.showAndWait();
     }
+
+
+  // @FXML
+   // public void initialize() {
+        // Initialize cell value factories to extract data for each column
+     // id_column.setCellValueFactory(data -> data.getValue().idProperty().asObject());
+     //  inventory_col_productName.setCellValueFactory(data -> data.getValue().productNameProperty());
+      // inventory_col_type.setCellValueFactory(data -> data.getValue().typeProperty());
+    //   inventory_col_stock.setCellValueFactory(data -> data.getValue().stockProperty().asObject());
+     // inventory_col_price.setCellValueFactory(data -> data.getValue().priceProperty().asObject());
+    //   inventory_col_status.setCellValueFactory(data -> data.getValue().statusProperty());
+      // qrCodeColumn.setCellValueFactory(data -> data.getValue().imageProperty());
+//
+   // }
+
+
+
+
+  //  @FXML
+   // public void Tri(ActionEvent actionEvent) {
+     //   List<Product> products = productService.tri();
+     //   ObservableList<Product> observableList = FXCollections.observableArrayList(products);
+     //   menu_tableView.setItems(observableList);
+        // Assuming you have TableColumn objects defined for each property of Product
+        // and setCellValueFactory configured appropriately for each column
+   // }
+  private void addToPieChartData(ObservableList<PieChart.Data> pieChartData, String type) {
+      // Searching for existing PieChart data with the same type
+      for (PieChart.Data data : pieChartData) {
+          if (data.getName().equals(type)) {
+              data.setPieValue(data.getPieValue() + 1);
+              return;
+          }
+      }
+      // Adding new data for new types
+      pieChartData.add(new PieChart.Data(type, 1));
+  }
+
 }

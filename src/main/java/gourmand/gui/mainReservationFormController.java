@@ -202,6 +202,8 @@ public class mainReservationFormController implements Initializable {
         tableShowData();
         reservationsShowData();
 
+        reservation_form.setVisible(true);
+
 
 
 

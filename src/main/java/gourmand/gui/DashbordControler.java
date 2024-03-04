@@ -11,6 +11,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.prefs.Preferences;
 
 public class DashbordControler {
 
@@ -68,4 +69,19 @@ public class DashbordControler {
         }
     }
 
+
+    //clear session
+    public void onLogout(ActionEvent actionEvent) throws IOException {
+
+        Preferences preferences = Preferences.userNodeForPackage(LoginPersonneController.class);
+        preferences.remove("user_connected");
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/LoginPersonne.fxml"));
+        Parent root = loader.load();
+        Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
+
+
+    }
 }

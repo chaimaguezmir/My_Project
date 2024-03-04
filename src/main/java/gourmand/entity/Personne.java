@@ -58,7 +58,7 @@ public class Personne {
         this.token = token;
     }
 
-    public static String getRole() {
+    public  String getRole() {
         return role;
     }
 

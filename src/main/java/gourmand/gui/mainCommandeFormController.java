@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.prefs.Preferences;
 
 public class mainCommandeFormController implements Initializable {
 
@@ -270,15 +271,23 @@ public class mainCommandeFormController implements Initializable {
 
 
     RestaurantTableService restaurantTableService = new RestaurantTableService();
+    public static  int getSessionId() {
+        Preferences prefs
+                = Preferences.userNodeForPackage(LoginPersonneController.class);
+        return prefs.getInt("user_connected",0);
 
+
+    }
     public void tablesList() {
 
         List<Integer> tablesL = new ArrayList<>();
         System.out.println("here");
 
 
-        int idPersonne = PersonneService.idSessions ;
-        for (Commande data : servicecommande.getAllPanierByPanierPersonne(idPersonne)) {
+        int idPersonne = getSessionId() ;
+        System.out.println(idPersonne);
+
+        for (Commande data : servicecommande.getAllPanierByPanierPersonne()) {
             tablesL.add(data.getIdPanier());
         }
 

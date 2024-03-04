@@ -7,6 +7,15 @@ package gourmand.entity;
 
 import java.sql.Date;
 
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+
 /**
  *
  * @author WINDOWS 10
@@ -16,7 +25,7 @@ public class Product {
     private Integer id;
     private String productId;
     private String productName;
-    private String type;
+    private static String type;
     private Integer stock;
     private Double price;
     private String status;
@@ -37,7 +46,7 @@ public class Product {
         this.image = image;
         this.date = date;
     }
-    
+
     public Product(Integer id, String productId, String productName,
                    String type, Integer quantity, Double price, String image, Date date){
         this.id = id;
@@ -65,8 +74,8 @@ public class Product {
     public String getProductName() {
         return productName;
     }
-    
-    public String getType(){
+
+    public static String getType(){
         return type;
     }
 
@@ -129,8 +138,27 @@ public class Product {
     public Date getDate() {
         return date;
     }
-    
+
     public Integer getQuantity(){
         return quantity;
     }
+
+
+
+
+    // tri
+
+   // private final IntegerProperty id = new SimpleIntegerProperty();
+ //   private final StringProperty productName = new SimpleStringProperty();
+   //private StringProperty type = new SimpleStringProperty();
+ //   private final IntegerProperty stock = new SimpleIntegerProperty();
+  //  private final DoubleProperty price = new SimpleDoubleProperty();
+   // private final StringProperty status = new SimpleStringProperty();
+  //  private final StringProperty image = new SimpleStringProperty();
+   // private final ObjectProperty<Date> date = new SimpleObjectProperty<>();
+
+
+
+  //  public void add(Product product) {
+ //   }
 }

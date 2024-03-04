@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.prefs.Preferences;
 
 public class mainCommandeClientFormController implements Initializable {
 
@@ -108,7 +109,13 @@ public class mainCommandeClientFormController implements Initializable {
 
     private ObservableList<Commande> reservationListData = FXCollections.observableArrayList();
     private ObservableList<Livraison> livListData = FXCollections.observableArrayList();
+    public static  int getSessionId() {
+        Preferences prefs
+                = Preferences.userNodeForPackage(LoginPersonneController.class);
+        return prefs.getInt("user_connected",0);
 
+
+    }
 
     public void livShowData() {
 
@@ -123,7 +130,7 @@ public class mainCommandeClientFormController implements Initializable {
 
         List<Commande> res = new ArrayList<>();
         // my commandes
-        for (Commande data : servicecommande.getAllCommandClient(PersonneService.idSessions)) {
+        for (Commande data : servicecommande.getAllCommandClient(getSessionId())) {
             cmdListData.add(data);
 
         }
@@ -233,14 +240,18 @@ public class mainCommandeClientFormController implements Initializable {
 
     RestaurantTableService restaurantTableService = new RestaurantTableService();
 
+
+
     public void tablesList() {
 
         List<Integer> tablesL = new ArrayList<>();
-        System.out.println("here");
+        System.out.println(getSessionId());
 
 
-        for (Commande data : servicecommande.getAllPanierByPanierPersonne(PersonneService.idSessions)) {
-            tablesL.add(data.getIdPanier());
+    ServicePanier servicePanier = new ServicePanier();
+
+        for (Panier data : servicePanier.getAllPanierByUserId(getSessionId())) {
+            tablesL.add(data.getId());
         }
 
         System.out.println(tablesL);
@@ -257,6 +268,8 @@ public class mainCommandeClientFormController implements Initializable {
         System.out.println("here");
 
         // cattegory dispaly
+
+
 
 
 
@@ -337,7 +350,7 @@ public class mainCommandeClientFormController implements Initializable {
         commande_adr_dest_tv.setText(reservation.getAdresse_dest());
 
         commande_prix_total_tv.setText(String.valueOf(reservation.getPrix_total()));
-        status_cb.setValue("en c ours");
+        status_cb.setValue("en curs");
         panier_cb.setValue(reservation.getIdPanier());
 
     }

@@ -112,8 +112,9 @@ public class PersonneService implements Service<Personne> {
 
             ResultSet resultSet = selectStatement.executeQuery();
             if (!resultSet.next()) {
-                // Aucun utilisateur trouvé avec cet email et ce mot de passe
+
                 return null;
+
             }
 // get sision
             int Sessions = resultSet.getInt(1);
@@ -132,8 +133,6 @@ public class PersonneService implements Service<Personne> {
             user.setToken(resultSet.getString("token"));
             user.setNum_tel(resultSet.getInt("num_tel"));
 
-
-            // ... (d'autres attributs)
             return user;
         }
     }
@@ -201,6 +200,38 @@ public class PersonneService implements Service<Personne> {
         return null;
     }
 
+    public Personne getPersonneById(int id) {
+        Personne personne = null;
+
+        try {
+            String sql = "SELECT * FROM user WHERE id = ?";
+            try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                statement.setInt(1, id);
+
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    if (resultSet.next()) {
+                        personne = new Personne(
+                                resultSet.getInt("id"),
+                                resultSet.getString("name"),
+                                resultSet.getString("prenom"),
+                                resultSet.getInt("age"),
+                                resultSet.getString("adresse"),
+                                resultSet.getString("email"),
+                                resultSet.getString("password"),
+                                resultSet.getString("token"),
+                                resultSet.getString("role"),
+                                resultSet.getInt("num_tel")
+                        );
+
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return personne;
+    }
 
 
 

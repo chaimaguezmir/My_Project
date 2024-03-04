@@ -6,6 +6,7 @@ module gourmand {
    // requires com.google.zxing.core;
     requires java.sql;
     requires java.prefs;
+    requires java.mail;
     opens gourmand.gui;
     opens gourmand.entity;
     opens gourmand.services;

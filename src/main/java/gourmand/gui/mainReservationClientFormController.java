@@ -166,7 +166,7 @@ public class mainReservationClientFormController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-
+        reservation_form.setVisible(true);
         tablesList();
 
         reservationsShowData();

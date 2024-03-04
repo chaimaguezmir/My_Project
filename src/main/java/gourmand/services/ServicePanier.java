@@ -38,7 +38,28 @@ public class ServicePanier {
         }
     }
 
+    public List<Panier> getAllPanierByUserId(int userId) {
+        List<Panier> panierList = new ArrayList<>();
+        try {
+            PreparedStatement st = connect.prepareStatement("SELECT * FROM panier WHERE personneId = ?");
 
+            System.out.println("id session"+PersonneService.idSessions);
+            st.setInt(1, PersonneService.idSessions);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                Panier panier = new Panier();
+                panier.setId(rs.getInt("id"));
+                panier.setPrix_total(rs.getDouble("prix_total"));
+                panier.setProductId(rs.getInt("productId"));
+                panier.setQuantity(rs.getInt("quantity"));
+                panier.setPersonneId(rs.getInt("personneId"));
+                panierList.add(panier);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ServicePanier.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return panierList;
+    }
     public Panier getById(int id) {
         Panier panier = new Panier();
         try {

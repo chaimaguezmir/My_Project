@@ -244,8 +244,9 @@ public class AfficherPersonneController  {
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
-            showAlert("Error", "An error occurred while loading the mainCommandeForm.");
+            showAlert("Error", "An error occurred while loading the mainForm.");
         }
+
 
     }
 

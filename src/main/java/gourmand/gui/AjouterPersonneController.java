@@ -99,7 +99,7 @@ public class AjouterPersonneController {
             Personne p = new Personne(nom, prenom, age, adresse, email, mdp, token, role, num_tel);
             ps.ajouter(p);
 
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/mainForm.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/LoginPersonne.fxml"));
             try {
                 Parent root = loader.load();
                 tfAdresse.getScene().setRoot(root);

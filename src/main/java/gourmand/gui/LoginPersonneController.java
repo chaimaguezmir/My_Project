@@ -38,11 +38,13 @@ public class LoginPersonneController {
     private Scene scene;
     private Parent root;
     @FXML
-    void login(ActionEvent event) throws SQLException {
+    void login(ActionEvent event) throws SQLException, IOException {
         Alert alertType;
         String email= emailInput.getText();
         String mdp=passwordInput.getText();
         Preferences prefs = Preferences.userNodeForPackage(LoginPersonneController.class);
+
+
         String emailRegex = "\\w+\\.?\\w+@[a-zA-Z_]+?\\.[a-zA-Z]{2,3}";
         if (!email.isEmpty() && !mdp.isEmpty()) {
             if (!email.matches(emailRegex)) {
@@ -54,12 +56,21 @@ public class LoginPersonneController {
             // test if user deosn't or no by email or password :
 
 
+            p = personneService.login(email,mdp);
+            prefs.putInt("user_connected", PersonneService.idSessions);
 
-        else {
-            p.setId(-1);
-            p=personneService.login(email,mdp);
-        if(p.getId()!=-1){
-            if(p.getRole().equals("Admin")){
+
+
+
+            if( p == null) {
+                alertType = new Alert(Alert.AlertType.ERROR);
+                alertType.setTitle("Error");
+                alertType.setHeaderText("email ou mot de passe invalid!");
+                alertType.show();
+            }
+            else  {
+
+                if(p.getRole().equals("Admin")){
                 try {
 
                     root = FXMLLoader.load(getClass().getResource("/AfficherPersonne.fxml"));
@@ -73,21 +84,68 @@ public class LoginPersonneController {
                 }
 
             }
-            else {
-                try {
+                else {
 
-                    root = FXMLLoader.load(getClass().getResource("/Dashbord.fxml"));
-                    stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-                    scene = new Scene(root);
-                    stage.setScene(scene);
-                    stage.show();
 
-                } catch (IOException e) {
-                    System.out.println(e.getMessage());
+                    try {
+
+                        root = FXMLLoader.load(getClass().getResource("/Dashbord.fxml"));
+                        stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                        scene = new Scene(root);
+                        stage.setScene(scene);
+                        stage.show();
+
+                    } catch (IOException e) {
+                        System.out.println(e.getMessage());
+                    }
+
+
                 }
             }
-        }
-        }
+
+
+
+
+
+
+
+
+
+//        else {
+//            p.setId(-1);
+//            p=personneService.login(email,mdp);
+//        if(p.getId()!=-1){
+//            if(p.getRole().equals("Admin")){
+//                try {
+//
+//                    root = FXMLLoader.load(getClass().getResource("/AfficherPersonne.fxml"));
+//                    stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+//                    scene = new Scene(root);
+//                    stage.setScene(scene);
+//                    stage.show();
+//
+//                } catch (IOException e) {
+//                    System.out.println(e.getMessage());
+//                }
+//
+//            }
+//            else {
+//                try {
+//
+//                    root = FXMLLoader.load(getClass().getResource("/Dashbord.fxml"));
+//                    stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+//                    scene = new Scene(root);
+//                    stage.setScene(scene);
+//                    stage.show();
+//
+//                } catch (IOException e) {
+//                    System.out.println(e.getMessage());
+//                }
+//            }
+//        }
+//        }
+//        }}
+
         }}
 
     public void inscrire(ActionEvent actionEvent) throws IOException, SQLException {

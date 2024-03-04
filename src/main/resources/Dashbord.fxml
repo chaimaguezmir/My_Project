@@ -40,6 +40,7 @@
                               <Button layoutX="7.0" layoutY="202.0" mnemonicParsing="false" onAction="#M" prefHeight="40.0" prefWidth="210.0" styleClass="nav-btn" stylesheets="@mainFormDesignClient.css" text="Menu" />
                               <Button layoutX="6.0" layoutY="300.0" mnemonicParsing="false" onAction="#L" prefHeight="40.0" prefWidth="210.0" styleClass="nav-btn" stylesheets="@mainFormDesignClient.css" text="Livraison" />
                               <Button layoutX="6.0" layoutY="356.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="210.0" styleClass="nav-btn" stylesheets="@mainFormDesignClient.css" text="Paiment" />
+                              <Button fx:id="logout_btn" layoutX="6.0" layoutY="418.0" mnemonicParsing="false" onAction="#onLogout" prefHeight="40.0" prefWidth="210.0" styleClass="nav-btn" stylesheets="@mainFormDesignClient.css" text="Logout" />
 
                            </children>
                         </AnchorPane>

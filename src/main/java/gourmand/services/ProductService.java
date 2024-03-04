@@ -4,10 +4,7 @@ import gourmand.gui.data;
 import gourmand.entity.Product;
 import gourmand.utils.Database;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
@@ -260,5 +257,35 @@ public class ProductService implements IService<Product> {
     public void delete(int id) {
 
     }
+
+
+    // tri
+    //public List<Product> tri() {
+      //  List<Product> products = new ArrayList<>();
+       // String req = "SELECT * FROM product ORDER BY prod_name";
+     //   try (Statement st = connect.createStatement();
+        //     ResultSet rs = st.executeQuery(req)) {
+         //   while (rs.next()) {
+            //    Product product = new Product();
+              //  product.setId(rs.getInt("id"));
+             //   product.setProductName(rs.getString("product_name"));
+              //  product.setType(rs.getString("type"));
+              //  product.setStock(rs.getInt("stock"));
+             //   product.setPrice(rs.getDouble("price"));
+             //   product.setStatus(rs.getString("status"));
+             //   product.setImage(rs.getString("image"));
+              //  product.setDate(rs.getDate("date"));
+              //  products.add(product);
+           // }
+       // } catch (SQLException e) {
+            // Handle or log the exception appropriately
+         //   e.printStackTrace();
+      //  }
+      //  return products;
+   // }
+
+
+
+
 
 }
